@@ -12,6 +12,7 @@ function Board() {
     Array(9).fill(null),
   )
   const [history, setHistory] = React.useState([])
+  const [moveCounter, setMoveCounter] = React.useState(0)
 
   const nextValue = calculateNextValue(squares)
   const winner = calculateWinner(squares)
@@ -56,6 +57,8 @@ function Board() {
 
     const historyCopy = [...history, squaresCopy]
     setHistory(historyCopy)
+
+    setMoveCounter(moveCounter + 1)
   }
 
   function restart() {
@@ -63,6 +66,16 @@ function Board() {
     // 💰 `Array(9).fill(null)` will do it!
     setSquares(Array(9).fill(null))
     setHistory([])
+  }
+  function back() {
+    // 🐨 reset the squares
+    // 💰 `Array(9).fill(null)` will do it!
+    const currentHistory = [...history]
+
+    console.log(currentHistory, moveCounter)
+    console.log(currentHistory[moveCounter - 1])
+    setSquares(currentHistory[moveCounter - 2])
+    // setHistory([])
   }
 
   function renderSquare(i) {
@@ -95,6 +108,9 @@ function Board() {
       </div>
       <button className="restart" onClick={restart}>
         restart
+      </button>
+      <button className="back" onClick={back}>
+        back
       </button>
     </div>
   )
