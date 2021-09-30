@@ -7,7 +7,12 @@ import {useLocalStorageState} from '../utils'
 function Board() {
   // 🐨 squares is the state for this component. Add useState for squares
 
-  const [squares, setSquares] = useLocalStorageState('squares')
+  const [squares, setSquares] = useLocalStorageState(
+    'squares',
+    Array(9).fill(null),
+  )
+  const [history, setHistory] = React.useState([])
+
   const nextValue = calculateNextValue(squares)
   const winner = calculateWinner(squares)
   const status = calculateStatus(winner, squares, nextValue)
@@ -48,12 +53,16 @@ function Board() {
     //
     // 🐨 set the squares to your copy
     setSquares(squaresCopy)
+
+    const historyCopy = [...history, squaresCopy]
+    setHistory(historyCopy)
   }
 
   function restart() {
     // 🐨 reset the squares
     // 💰 `Array(9).fill(null)` will do it!
     setSquares(Array(9).fill(null))
+    setHistory([])
   }
 
   function renderSquare(i) {
@@ -68,6 +77,7 @@ function Board() {
     <div>
       {/* 🐨 put the status in the div below */}
       <div className="status">{status}</div>
+      <div className="history">{JSON.stringify(history)}</div>
       <div className="board-row">
         {renderSquare(0)}
         {renderSquare(1)}
