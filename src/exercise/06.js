@@ -15,28 +15,35 @@ import {
 
 function PokemonInfo({pokemonName}) {
   // 🐨 Have state for the pokemon (null)
-  const [pokemon, setPokemon] = React.useState(null)
-  const [error, setError] = React.useState(null)
-  const [status, setStatus] = React.useState('idle')
+  // const [pokemon, setPokemon] = React.useState(null)
+  // const [error, setError] = React.useState(null)
+  // const [status, setStatus] = React.useState('idle')
+  const [state, setState] = React.useState({
+    pokemon: null,
+    error: null,
+    status: 'idle',
+  })
   // 🐨 use React.useEffect where the callback should be called whenever the
   // pokemon name changes.
 
   React.useEffect(() => {
     if (!pokemonName) return
 
-    setPokemon(null)
+    setState({pokemon: null, status: 'pending'})
 
-    setStatus('pending')
+    // setStatus('pending')
 
     fetchPokemon(pokemonName)
       .then(pokemonData => {
         console.log(pokemonData)
-        setPokemon(pokemonData)
-        setStatus('resolved')
+        // setPokemon(pokemonData)
+        // setStatus('resolved')
+        setState({pokemon: pokemonData, status: 'resolved'})
       })
       .catch(error => {
-        setError(error)
-        setStatus('rejected')
+        // setError(error)
+        // setStatus('rejected')
+        setState({error: error, status: 'rejected'})
       })
   }, [pokemonName])
 
@@ -48,22 +55,23 @@ function PokemonInfo({pokemonName}) {
   //     pokemonData => { /* update all the state here */},
   //   )
   // 🐨 return the following things based on the `pokemon` state and `pokemonName` prop:
-  if (status === 'rejected')
+  if (state.status === 'rejected')
     return (
       <div role="alert">
         There was an error:{' '}
-        <pre style={{whiteSpace: 'normal'}}>{error.message}</pre>
+        <pre style={{whiteSpace: 'normal'}}>{state.error.message}</pre>
       </div>
     )
 
   //   1. no pokemonName: 'Submit a pokemon'
-  if (status === 'idle') return 'Submit a pokemon'
+  if (state.status === 'idle') return 'Submit a pokemon'
 
   //   2. pokemonName but no pokemon: <PokemonInfoFallback name={pokemonName} />
-  if (status === 'pending') return <PokemonInfoFallback name={pokemonName} />
+  if (state.status === 'pending')
+    return <PokemonInfoFallback name={pokemonName} />
 
   //   3. pokemon: <PokemonDataView pokemon={pokemon} />
-  return <PokemonDataView pokemon={pokemon} />
+  return <PokemonDataView pokemon={state.pokemon} />
 }
 
 function App() {
