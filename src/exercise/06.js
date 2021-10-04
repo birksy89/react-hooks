@@ -2,6 +2,7 @@
 // http://localhost:3000/isolated/exercise/06.js
 
 import * as React from 'react'
+import ErrorBoundary from '../errorboundary'
 // 🐨 you'll want the following additional things from '../pokemon':
 // fetchPokemon: the function we call to get the pokemon info
 // PokemonInfoFallback: the thing we show while we're loading the pokemon info
@@ -55,13 +56,13 @@ function PokemonInfo({pokemonName}) {
   //     pokemonData => { /* update all the state here */},
   //   )
   // 🐨 return the following things based on the `pokemon` state and `pokemonName` prop:
-  if (state.status === 'rejected')
-    return (
-      <div role="alert">
-        There was an error:{' '}
-        <pre style={{whiteSpace: 'normal'}}>{state.error.message}</pre>
-      </div>
-    )
+  if (state.status === 'rejected') throw state.error.message
+  // return (
+  //   <div role="alert">
+  //     There was an error:{' '}
+  //     <pre style={{whiteSpace: 'normal'}}>{state.error.message}</pre>
+  //   </div>
+  // )
 
   //   1. no pokemonName: 'Submit a pokemon'
   if (state.status === 'idle') return 'Submit a pokemon'
@@ -86,7 +87,9 @@ function App() {
       <PokemonForm pokemonName={pokemonName} onSubmit={handleSubmit} />
       <hr />
       <div className="pokemon-info">
-        <PokemonInfo pokemonName={pokemonName} />
+        <ErrorBoundary>
+          <PokemonInfo pokemonName={pokemonName} />
+        </ErrorBoundary>
       </div>
     </div>
   )
